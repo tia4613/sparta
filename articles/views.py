@@ -23,20 +23,26 @@ class ArticleListAPIView(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-@api_view(["GET", "PUT", "DELETE"])
-def article_detail(request, pk):
-    article = get_object_or_404(Article, pk=pk)
-    if request.method == "GET":
+
+class ArticleDetailAPIView(APIView):
+
+    def get_object(self, article_pk):
+        return get_object_or_404(Article, pk=article_pk)
+
+    def get(self, request, article_pk):
+        article = self.get_object(article_pk)
         serializer = ArticleSerializer(article)
         return Response(serializer.data)
 
-    elif request.method == "PUT":
+    def put(self, request, article_pk):
+        article = self.get_object(article_pk)
         serializer = ArticleSerializer(article, data=request.data, partial=True)
         if serializer.is_valid(raise_exception=True):
-          serializer.save()
-          return Response(serializer.data)
+            serializer.save()
+            return Response(serializer.data)
 
-    elif request.method == "DELETE":
+    def delete(self, request, article_pk):
+        article = self.get_object(article_pk)
         article.delete()
-        data = {"delete": f"Article({pk}) is deleted."}
+        data = {"pk": f"{article_pk} is deleted."}
         return Response(data, status=status.HTTP_200_OK)
