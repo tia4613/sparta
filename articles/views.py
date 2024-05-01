@@ -20,8 +20,14 @@ def article_list(request):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-@api_view(["GET"])
+@api_view(["GET", "DELETE"])
 def article_detail(request, pk):
     article = get_object_or_404(Article, pk=pk)
-    serializer = ArticleSerializer(article)
-    return Response(serializer.data)
+    if request.method == "GET":
+        serializer = ArticleSerializer(article)
+        return Response(serializer.data)
+
+    elif request.method == "DELETE":
+        article.delete()
+        data = {"delete": f"Article({pk}) is deleted."}
+        return Response(data, status=status.HTTP_200_OK)
