@@ -5,16 +5,19 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from .serializers import ArticleSerializer
 from rest_framework import status
+from rest_framework.views import APIView
 from .models import Article
 
 
-@api_view(["GET", "POST"])
-def article_list(request):
-    if request.method == "GET":
+
+
+class ArticleListAPIView(APIView):
+    def get(self, request):
         articles = Article.objects.all()
         serializer = ArticleSerializer(articles, many=True)
         return Response(serializer.data)
-    elif request.method == "POST":
+
+    def post(self, request):
         serializer = ArticleSerializer(data=request.data)
         if serializer.is_valid(raise_exception=True):
             serializer.save()
