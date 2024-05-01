@@ -4,6 +4,7 @@ from django.core import serializers
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from .serializers import ArticleSerializer
+from rest_framework import status
 from .models import Article
 
 
@@ -15,10 +16,9 @@ def article_list(request):
         return Response(serializer.data)
     elif request.method == "POST":
         serializer = ArticleSerializer(data=request.data)
-        if serializer.is_valid():
+        if serializer.is_valid(raise_exception=True):
             serializer.save()
-            return Response(serializer.data, status=201) # status 안써도됨(회사약속)
-        return Response(serializer.errors, status=400)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 @api_view(["GET"])
 def article_detail(request, pk):
