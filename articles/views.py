@@ -20,12 +20,18 @@ def article_list(request):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-@api_view(["GET", "DELETE"])
+@api_view(["GET", "PUT", "DELETE"])
 def article_detail(request, pk):
     article = get_object_or_404(Article, pk=pk)
     if request.method == "GET":
         serializer = ArticleSerializer(article)
         return Response(serializer.data)
+
+    elif request.method == "PUT":
+        serializer = ArticleSerializer(article, data=request.data, partial=True)
+        if serializer.is_valid(raise_exception=True):
+          serializer.save()
+          return Response(serializer.data)
 
     elif request.method == "DELETE":
         article.delete()
