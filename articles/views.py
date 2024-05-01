@@ -6,7 +6,7 @@ from rest_framework.response import Response
 from .serializers import ArticleSerializer, CommentSerializer
 from rest_framework import status
 from rest_framework.views import APIView
-from .models import Article
+from .models import Article, Comment
 
 
 
@@ -61,3 +61,10 @@ class CommentListAPIView(APIView):
         if serializer.is_valid(raise_exception=True):
             serializer.save(article=article)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+class CommentDetailAPIView(APIView):
+    def delete(self, request, comment_pk):
+        comment = get_object_or_404(Comment, pk=comment_pk)
+        comment.delete()
+        data = {"pk": f"{comment_pk} is deleted."}
+        return Response(data, status=status.HTTP_200_OK)
