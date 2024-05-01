@@ -1,3 +1,8 @@
 from django.urls import path
+from . import views
 
-urlpatterns = []
+app_name = "articles"
+urlpatterns = [
+    path("html/", views.article_list_html, name="article_list_html"),
+    path("json-01/", views.json_01, name="json_01"),
+]
