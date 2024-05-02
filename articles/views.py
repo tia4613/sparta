@@ -3,7 +3,7 @@ from django.http import JsonResponse, HttpResponse
 from django.core import serializers
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from .serializers import ArticleSerializer, CommentSerializer
+from .serializers import ArticleSerializer, ArticleDetailSerializer, CommentSerializer
 from rest_framework import status
 from rest_framework.views import APIView
 from .models import Article, Comment
@@ -31,12 +31,12 @@ class ArticleDetailAPIView(APIView):
 
     def get(self, request, pk):
         article = self.get_object(pk)
-        serializer = ArticleSerializer(article)
+        serializer = ArticleDetailSerializer(article)
         return Response(serializer.data)
 
     def put(self, request, pk):
         article = self.get_object(pk)
-        serializer = ArticleSerializer(article, data=request.data, partial=True)
+        serializer = ArticleDetailSerializer(article, data=request.data, partial=True)
         if serializer.is_valid(raise_exception=True):
             serializer.save()
             return Response(serializer.data)
