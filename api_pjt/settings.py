@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'rest_framework',
     # Local
     'articles',
+    'accounts',
 
 ]
 
@@ -85,6 +86,9 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+
+# Custom User Model
+AUTH_USER_MODEL = 'accounts.User'
 
 
 # Password validation
