@@ -3,15 +3,19 @@ from django.http import JsonResponse, HttpResponse
 from django.core import serializers
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from .serializers import ArticleSerializer, ArticleDetailSerializer, CommentSerializer
+from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
 from rest_framework.views import APIView
+from .serializers import ArticleSerializer, ArticleDetailSerializer, CommentSerializer
 from .models import Article, Comment
 
 
 
 
 class ArticleListAPIView(APIView):
+
+    permission_classes = [IsAuthenticated]
+
     def get(self, request):
         articles = Article.objects.all()
         serializer = ArticleSerializer(articles, many=True)
@@ -25,6 +29,7 @@ class ArticleListAPIView(APIView):
 
 
 class ArticleDetailAPIView(APIView):
+    permission_classes = [IsAuthenticated]
 
     def get_object(self, pk):
         return get_object_or_404(Article, pk=pk)
@@ -49,6 +54,8 @@ class ArticleDetailAPIView(APIView):
 
 
 class CommentListAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+
     def get(self, request, article_pk):
         article = get_object_or_404(Article, pk=article_pk)
         comments = article.comments.all()
@@ -63,6 +70,8 @@ class CommentListAPIView(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 class CommentDetailAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+    
     def put(self, request, comment_pk):
         comment = get_object_or_404(Comment, pk=comment_pk)
         serializer = CommentSerializer(comment, data=request.data, partial=True)
